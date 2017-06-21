@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>用户中心</title>
+		<link href="https://cdn.bootcss.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+		<script src="https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+		<script src="https://cdn.bootcss.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>	
+		<style type="text/css">
+			body{
+				padding-top: 70px;
+			}
+		</style>
+	</head>
+	<body>
+		{{include '../tpl/head'}}
+		<!--<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container">
+				<a class="navbar-brand" href="#">学生图书借阅系统</a>
+				<ul class="nav navbar-nav">
+					<li class="active">
+						<a href="/user/">书籍列表</a>
+					</li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					{{if userId}}
+					<li><a href="/user/info">用户中心<span class="caret"></span></a></li>
+					<li><a href="/logout">退出</a></li>
+					{{else}}
+					<li><a href="/login">登录</a></li>
+					<li><a href="/register">注册</a></li>
+					{{/if}}
+				</ul>
+			</div>
+		</nav>-->
+		
+		<div class="container">
+			<table class="table table-bordered">
+				<thead>
+					<th>序号</th>
+					<th>书名</th>
+					<th>作者</th>
+					<th>借阅时间</th>
+					<th>操作</th>
+				</thead>
+				<tbody id="write-book">
+					{{each data}}
+					<tr>
+						<td>{{$index+1}}</td>
+						<td>{{$value.bId.name}}</td>
+						<td>{{$value.bId.author}}</td>
+						<td>{{$value.getBorrowDate()}}</td>
+						<td><button class="btn btn-info" onclick="cancelHandel('{{$value.bId.id}}')">取消借阅</button></td>
+					</tr>
+					{{/each}}
+				</tbody>
+			</table>
+		</div>
+	</body>
+	<script>
+		function cancelHandel(bookId){
+			//ajax里get方法时后面的data是指 url后面的内容 西欧昂党羽url: '/user/cancel/?bid=bookId'
+			//如果是post请求方法时,则data在请求体里,即body-parser里
+			$.ajax({
+				url:'/user/cancel',
+				type:'get',
+				data:{bid:bookId},
+				dataType: 'json',
+				success: function(res){
+					if(res.status == 200){
+						alert('删除成功')
+						location.reload();
+					}else{
+						alert('删除失败')
+					}
+				},
+				error: function(err){
+					console.dir(err);
+				}
+			})
+		}
+	</script>
+</html>
